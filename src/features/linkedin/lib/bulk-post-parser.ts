@@ -79,28 +79,54 @@ const LABEL_MAP: Record<string, FieldId> = {
 
 const SLIDE_LINE = /^(?:carousel\s+)?slide\s*(\d+)\s*(title|body)$/i;
 
+const WEEKDAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+
+function nextWeekday(name: string): Date {
+  const target = WEEKDAYS.indexOf(name);
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  const diff = (target - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+
 const DATE_FORMATS: Array<(s: string) => Date | null> = [
   (s) => (/^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(`${s}T00:00:00`) : null),
   (s) => {
-    // d/m/y or m/d/y or d-m-y — prefer day-first when the first number > 12.
+    const lower = s.toLowerCase();
+    if (lower === "today") return new Date();
+    if (lower === "tomorrow") { const d = new Date(); d.setDate(d.getDate() + 1); return d; }
+    if (WEEKDAYS.includes(lower)) return nextWeekday(lower);
+    return null;
+  },
+  (s) => {
+    // m/d/y or d/m/y or m-d-y — prefer month-first (US), swap when only the other order is valid.
     const m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);
     if (!m) return null;
     let [, a, b, y] = m;
     let year = Number(y);
     if (year < 100) year += 2000;
-    let day = Number(a);
-    let month = Number(b);
-    if (day > 12 && month <= 12) {
-      // already day-first
-    } else if (month > 12 && day <= 12) {
-      [day, month] = [month, day];
+    let month = Number(a);
+    let day = Number(b);
+    if (month > 12 && day <= 12) {
+      [month, day] = [day, month];
     }
     const d = new Date(year, month - 1, day);
     return Number.isNaN(d.getTime()) ? null : d;
   },
   (s) => {
-    const d = new Date(s);
-    return Number.isNaN(d.getTime()) ? null : d;
+    // Strip ordinal suffixes ("10th", "3rd") which break Date parsing.
+    const cleaned = s.replace(/\b(\d{1,2})(st|nd|rd|th)\b/gi, "$1");
+    let d = new Date(cleaned);
+    if (Number.isNaN(d.getTime())) return null;
+    // "Month Day" with no year parses to a bogus/ambiguous year in some engines — pin to current year
+    // (or next year if that date already passed), unless a 4-digit year was actually present.
+    if (!/\b\d{4}\b/.test(cleaned)) {
+      const now = new Date();
+      d.setFullYear(now.getFullYear());
+      if (d.getTime() < now.setHours(0, 0, 0, 0)) d.setFullYear(d.getFullYear() + 1);
+    }
+    return d;
   },
 ];
 
@@ -109,7 +135,7 @@ function tryParseDate(raw: string): string {
   if (!trimmed) return "";
   for (const attempt of DATE_FORMATS) {
     const d = attempt(trimmed);
-    if (d) {
+    if (d && !Number.isNaN(d.getTime())) {
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
       const day = String(d.getDate()).padStart(2, "0");
@@ -150,7 +176,7 @@ function parseBlock(block: string, pillarOptions: PillarOption[]): LinkedinPostV
   };
 
   for (const rawLine of lines) {
-    const match = rawLine.match(/^([A-Za-z][A-Za-z ]*?):\s?(.*)$/);
+    const match = rawLine.match(/^([A-Za-z][A-Za-z0-9 ]*?):\s?(.*)$/);
     if (!match) {
       if (rawLine.trim() !== "") appendToCurrent(rawLine);
       continue;
@@ -202,7 +228,9 @@ function parseBlock(block: string, pillarOptions: PillarOption[]): LinkedinPostV
 
   const carouselSlides = Array.from(slides.entries())
     .sort(([a], [b]) => a - b)
-    .map(([, slide], i) => ({ order: i, title: slide.title.trim(), body: slide.body.trim() }));
+    .map(([, slide]) => ({ title: slide.title.trim(), body: slide.body.trim() }))
+    .filter((slide) => slide.title || slide.body)
+    .map((slide, i) => ({ order: i, ...slide }));
 
   return {
     status,
