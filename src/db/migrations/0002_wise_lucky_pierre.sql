@@ -1,0 +1,2 @@
+ALTER TABLE "linkedin_posts" ADD COLUMN "goal_id" uuid;--> statement-breakpoint
+ALTER TABLE "linkedin_posts" ADD CONSTRAINT "linkedin_posts_goal_id_goals_id_fk" FOREIGN KEY ("goal_id") REFERENCES "public"."goals"("id") ON DELETE set null ON UPDATE no action;
