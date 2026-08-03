@@ -23,25 +23,30 @@ import {
 } from "@/components/ui/alert-dialog";
 import { linkedinPostStatusConfig, linkedinPostPipelineStatuses } from "@/lib/status-config";
 import type { PillarOption } from "../../actions/pillars.actions";
+import type { GoalOption } from "@/features/goals/actions/goals.actions";
 import type { LinkedinPost } from "@/db/schema";
 
 export function BulkActionBar({
   count,
   pillarOptions,
+  goalOptions,
   isPending,
   onClear,
   onSetStatus,
   onSetDate,
   onAssignPillar,
+  onSetGoal,
   onDelete,
 }: {
   count: number;
   pillarOptions: PillarOption[];
+  goalOptions: GoalOption[];
   isPending: boolean;
   onClear: () => void;
   onSetStatus: (status: LinkedinPost["status"]) => void;
   onSetDate: (date: string) => void;
   onAssignPillar: (pillarId: string) => void;
+  onSetGoal: (goalId: string) => void;
   onDelete: () => void;
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -81,6 +86,19 @@ export function BulkActionBar({
           {pillarOptions.map((p) => (
             <SelectItem key={p.id} value={p.id}>
               {p.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select onValueChange={(v) => onSetGoal(v as string)}>
+        <SelectTrigger className="h-8 w-[150px]">
+          <SelectValue placeholder="Set goal" />
+        </SelectTrigger>
+        <SelectContent>
+          {goalOptions.map((g) => (
+            <SelectItem key={g.id} value={g.id}>
+              {g.title}
             </SelectItem>
           ))}
         </SelectContent>

@@ -22,6 +22,7 @@ import {
   bulkSetLinkedinPostsStatus,
   bulkRescheduleLinkedinPosts,
   bulkAssignLinkedinPostsPillar,
+  bulkSetLinkedinPostsGoal,
 } from "../../actions/posts.actions";
 import type { LinkedinPostWithPillars } from "../../actions/posts.actions";
 import type { LinkedinPostValues } from "../../schema/post.schema";
@@ -218,6 +219,7 @@ export function DailyPostingView({
       <BulkActionBar
         count={selectedIds.size}
         pillarOptions={pillarOptions}
+        goalOptions={goalOptions}
         isPending={isPending}
         onClear={clearSelection}
         onSetStatus={(status) =>
@@ -241,6 +243,14 @@ export function DailyPostingView({
             const ids = Array.from(selectedIds);
             await bulkAssignLinkedinPostsPillar(ids, pillarId);
             toast.success(`Pillar assigned to ${ids.length} post${ids.length === 1 ? "" : "s"}`);
+            refresh();
+          })
+        }
+        onSetGoal={(goalId) =>
+          startTransition(async () => {
+            const ids = Array.from(selectedIds);
+            await bulkSetLinkedinPostsGoal(ids, goalId);
+            toast.success(`Goal set on ${ids.length} post${ids.length === 1 ? "" : "s"}`);
             refresh();
           })
         }

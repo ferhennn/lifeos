@@ -364,6 +364,16 @@ export async function bulkRescheduleLinkedinPosts(ids: string[], scheduledDate: 
   revalidateAll();
 }
 
+export async function bulkSetLinkedinPostsGoal(ids: string[], goalId: string | null) {
+  if (ids.length === 0) return;
+  const user = await requireUser();
+  await db
+    .update(linkedinPosts)
+    .set({ goalId, updatedAt: new Date() })
+    .where(and(eq(linkedinPosts.userId, user.id), inArray(linkedinPosts.id, ids)));
+  revalidateAll();
+}
+
 export async function bulkAssignLinkedinPostsPillar(ids: string[], pillarId: string) {
   if (ids.length === 0) return;
   const user = await requireUser();
