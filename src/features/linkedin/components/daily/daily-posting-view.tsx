@@ -68,7 +68,7 @@ export function DailyPostingView({
   };
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-1 flex-col gap-6 p-6">
+    <div className="mx-auto flex max-w-6xl flex-1 flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">Today&apos;s queue, front and center.</p>
         <div className="flex items-center gap-2">
@@ -97,81 +97,85 @@ export function DailyPostingView({
         </div>
       </div>
 
-      {queuePost ? (
-        <QueueCard
-          post={queuePost}
-          isPending={isPending}
-          onMarkPosted={() =>
-            startTransition(async () => {
-              await markLinkedinPostPosted(queuePost.id);
-              toast.success("Marked posted — queue advances to the next post");
-              refresh();
-            })
-          }
-          onEdit={() => {
-            setEditingPost(queuePost);
-            setSheetOpen(true);
-          }}
-          onDuplicate={() =>
-            startTransition(async () => {
-              await duplicateLinkedinPost(queuePost.id);
-              toast.success("Post duplicated as a draft");
-              refresh();
-            })
-          }
-        />
-      ) : (
-        <EmptyState
-          icon={CalendarCheck2}
-          title="Nothing queued for today"
-          description="Schedule a post from the Pipeline, or create one directly here."
-          action={
-            <Button size="sm" onClick={() => setSheetOpen(true)}>
-              <Plus className="h-4 w-4" /> Create a post
-            </Button>
-          }
-        />
-      )}
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+        <div className="lg:sticky lg:top-6">
+          {queuePost ? (
+            <QueueCard
+              post={queuePost}
+              isPending={isPending}
+              onMarkPosted={() =>
+                startTransition(async () => {
+                  await markLinkedinPostPosted(queuePost.id);
+                  toast.success("Marked posted — queue advances to the next post");
+                  refresh();
+                })
+              }
+              onEdit={() => {
+                setEditingPost(queuePost);
+                setSheetOpen(true);
+              }}
+              onDuplicate={() =>
+                startTransition(async () => {
+                  await duplicateLinkedinPost(queuePost.id);
+                  toast.success("Post duplicated as a draft");
+                  refresh();
+                })
+              }
+            />
+          ) : (
+            <EmptyState
+              icon={CalendarCheck2}
+              title="Nothing queued for today"
+              description="Schedule a post from the Pipeline, or create one directly here."
+              action={
+                <Button size="sm" onClick={() => setSheetOpen(true)}>
+                  <Plus className="h-4 w-4" /> Create a post
+                </Button>
+              }
+            />
+          )}
+        </div>
 
-      <div className="space-y-2">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Upcoming</h2>
-        {upcomingPosts.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nothing else scheduled yet.</p>
-        ) : (
-          <div className="space-y-1.5">
-            {upcomingPosts.map((post) => (
-              <PostRow
-                key={post.id}
-                post={post}
-                selectable={selectMode}
-                selected={selectedIds.has(post.id)}
-                onToggleSelect={(checked) => toggleSelected(post.id, checked)}
-                onEdit={() => {
-                  if (selectMode) {
-                    toggleSelected(post.id, !selectedIds.has(post.id));
-                    return;
+        <div className="space-y-2">
+          <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Upcoming</h2>
+          {upcomingPosts.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Nothing else scheduled yet.</p>
+          ) : (
+            <div className="space-y-1.5">
+              {upcomingPosts.map((post) => (
+                <PostRow
+                  key={post.id}
+                  post={post}
+                  selectable={selectMode}
+                  selected={selectedIds.has(post.id)}
+                  onToggleSelect={(checked) => toggleSelected(post.id, checked)}
+                  onEdit={() => {
+                    if (selectMode) {
+                      toggleSelected(post.id, !selectedIds.has(post.id));
+                      return;
+                    }
+                    setEditingPost(post);
+                    setSheetOpen(true);
+                  }}
+                  onDuplicate={() =>
+                    startTransition(async () => {
+                      await duplicateLinkedinPost(post.id);
+                      toast.success("Post duplicated");
+                      refresh();
+                    })
                   }
-                  setEditingPost(post);
-                  setSheetOpen(true);
-                }}
-                onDuplicate={() =>
-                  startTransition(async () => {
-                    await duplicateLinkedinPost(post.id);
-                    toast.success("Post duplicated");
-                    refresh();
-                  })
-                }
-                onDelete={() =>
-                  startTransition(async () => {
-                    await deleteLinkedinPost(post.id);
-                    toast.success("Post deleted");
-                    refresh();
-                  })
-                }
-              />
-            ))}
-          </div>
-        )}
+                  onDelete={() =>
+                    startTransition(async () => {
+                      await deleteLinkedinPost(post.id);
+                      toast.success("Post deleted");
+                      refresh();
+                    })
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <PostFormSheet
