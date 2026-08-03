@@ -327,6 +327,57 @@ export async function deleteLinkedinPost(id: string) {
   revalidateAll();
 }
 
+export async function bulkDeleteLinkedinPosts(ids: string[]) {
+  if (ids.length === 0) return;
+  const user = await requireUser();
+  await db.delete(linkedinPosts).where(and(eq(linkedinPosts.userId, user.id), inArray(linkedinPosts.id, ids)));
+  revalidateAll();
+}
+
+export async function bulkSetLinkedinPostsStatus(ids: string[], status: LinkedinPost["status"]) {
+  if (ids.length === 0) return;
+  const user = await requireUser();
+  await db
+    .update(linkedinPosts)
+    .set({ status, updatedAt: new Date(), postedAt: status === "published" ? new Date() : undefined })
+    .where(and(eq(linkedinPosts.userId, user.id), inArray(linkedinPosts.id, ids)));
+  revalidateAll();
+}
+
+export async function bulkRescheduleLinkedinPosts(ids: string[], scheduledDate: string | null) {
+  if (ids.length === 0) return;
+  const user = await requireUser();
+  const rows = await db
+    .select({ id: linkedinPosts.id, status: linkedinPosts.status })
+    .from(linkedinPosts)
+    .where(and(eq(linkedinPosts.userId, user.id), inArray(linkedinPosts.id, ids)));
+
+  await Promise.all(
+    rows.map((row) => {
+      const nextStatus = scheduledDate && row.status === "idea" ? "scheduled" : row.status;
+      return db
+        .update(linkedinPosts)
+        .set({ scheduledDate, status: nextStatus, updatedAt: new Date() })
+        .where(and(eq(linkedinPosts.id, row.id), eq(linkedinPosts.userId, user.id)));
+    }),
+  );
+  revalidateAll();
+}
+
+export async function bulkAssignLinkedinPostsPillar(ids: string[], pillarId: string) {
+  if (ids.length === 0) return;
+  const user = await requireUser();
+  const rows = await db
+    .select({ id: linkedinPosts.id })
+    .from(linkedinPosts)
+    .where(and(eq(linkedinPosts.userId, user.id), inArray(linkedinPosts.id, ids)));
+  const validIds = rows.map((r) => r.id);
+  if (validIds.length === 0) return;
+
+  await db.insert(linkedinPostPillars).values(validIds.map((postId) => ({ postId, pillarId }))).onConflictDoNothing();
+  revalidateAll();
+}
+
 export async function deleteLinkedinPosts(ids: string[]) {
   if (ids.length === 0) return;
   const user = await requireUser();

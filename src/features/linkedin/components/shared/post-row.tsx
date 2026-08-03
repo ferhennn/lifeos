@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import { Edit, Copy as CopyIcon, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { linkedinPostStatusConfig, dot } from "@/lib/status-config";
 import type { LinkedinPostWithPillars } from "../../actions/posts.actions";
 
@@ -12,16 +13,25 @@ export function PostRow({
   onEdit,
   onDuplicate,
   onDelete,
+  selectable,
+  selected,
+  onToggleSelect,
 }: {
   post: LinkedinPostWithPillars;
   onEdit: () => void;
   onDuplicate?: () => void;
   onDelete?: () => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (checked: boolean) => void;
 }) {
   const config = linkedinPostStatusConfig[post.status];
 
   return (
     <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-sm">
+      {selectable && (
+        <Checkbox checked={selected ?? false} onCheckedChange={(checked) => onToggleSelect?.(checked === true)} />
+      )}
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot[config.color]}`} />
       <button type="button" onClick={onEdit} className="min-w-0 flex-1 truncate text-left hover:underline">
         {post.hook || post.topic || post.caption || "Untitled post"}
