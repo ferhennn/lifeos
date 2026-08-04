@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MoreHorizontal, Pencil, Trash2, CalendarDays, Bug, Ban } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, CalendarDays, Bug, Ban, Briefcase } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import {
   DropdownMenu,
@@ -20,10 +20,12 @@ export function AgencyProjectCard({
   project,
   onEdit,
   onDelete,
+  readOnly = false,
 }: {
   project: AgencyProjectWithMeta;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  readOnly?: boolean;
 }) {
   return (
     <motion.div
@@ -40,30 +42,37 @@ export function AgencyProjectCard({
           <h3 className="mt-0.5 truncate text-sm font-semibold leading-snug hover:underline">{project.title}</h3>
         </Link>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="opacity-0 transition-opacity group-hover:opacity-100 data-[popup-open]:opacity-100"
-              />
-            }
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onEdit}>
-              <Pencil /> Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onClick={onDelete}>
-              <Trash2 /> Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {!readOnly && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="opacity-0 transition-opacity group-hover:opacity-100 data-[popup-open]:opacity-100"
+                />
+              }
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={onEdit}>
+                <Pencil /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem variant="destructive" onClick={onDelete}>
+                <Trash2 /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
+        {readOnly && (
+          <span className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-0.5 text-xs font-medium text-foreground/80">
+            <Briefcase className="h-3 w-3" /> Agency
+          </span>
+        )}
         <StatusBadge config={projectStatusConfig} status={project.status} />
         <StatusBadge config={agencyProjectHealthConfig} status={project.health} />
       </div>

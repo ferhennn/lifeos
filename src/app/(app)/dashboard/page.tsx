@@ -31,11 +31,11 @@ export default async function DashboardPage() {
             <TodaySchedule tasks={data.todaySchedule} />
             <TodayPriorityList tasks={data.todayPriority} />
           </div>
+          <TodayLinkedinCard post={data.todayLinkedinPost} />
         </div>
         <div className="space-y-4">
           <ProgressRingCard completed={data.progressToday.completed} total={data.progressToday.total} />
           <MonthlyGoalProgress goals={data.monthlyGoalProgress} />
-          <TodayLinkedinCard post={data.todayLinkedinPost} />
           <MotivationalQuote quote={data.quote} />
         </div>
       </div>
