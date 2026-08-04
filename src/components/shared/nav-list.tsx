@@ -57,7 +57,7 @@ export function NavList({
               onNavigate?.();
               setHowItWorksOpen(true);
             }}
-            className={cn(itemClassName, !collapsed && "gap-1.5")}
+            className={itemClassName}
           >
             {content}
           </button>
