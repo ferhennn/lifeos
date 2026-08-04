@@ -219,7 +219,13 @@ export async function quickCreateTask(values: QuickTaskValues) {
 
   const [task] = await db
     .insert(tasks)
-    .values({ userId: user.id, title: parsed.title, status: "todo", priority: "medium" })
+    .values({
+      userId: user.id,
+      title: parsed.title,
+      status: "todo",
+      priority: "medium",
+      dueDate: new Date().toISOString().slice(0, 10),
+    })
     .returning();
 
   revalidatePath("/tasks");

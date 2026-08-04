@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { Loader2, X, ChevronsUpDown, Check, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -228,7 +229,7 @@ export function TaskFormSheet({
               reminderAt: task.reminderAt ? new Date(task.reminderAt).toISOString().slice(0, 16) : "",
               dependsOn: task.dependsOn.map((d) => d.id),
             }
-          : { ...emptyDefaults, ...defaults },
+          : { ...emptyDefaults, dueDate: format(new Date(), "yyyy-MM-dd"), ...defaults },
       );
     }
   }, [open, task, defaults, reset]);
