@@ -83,3 +83,82 @@ export const linkedinGoalMetricEnum = pgEnum("linkedin_goal_metric", [
   "impressions",
   "freelance_leads",
 ]);
+
+export const agencyTaskStatusEnum = pgEnum("agency_task_status", [
+  "inbox",
+  "todo",
+  "today",
+  "in_progress",
+  "blocked",
+  "waiting_review",
+  "waiting_client",
+  "completed",
+  "archived",
+]);
+
+export const agencyTaskPriorityEnum = pgEnum("agency_task_priority", [
+  "critical",
+  "high",
+  "medium",
+  "low",
+]);
+
+export const agencyTaskTypeEnum = pgEnum("agency_task_type", [
+  "feature",
+  "bug",
+  "research",
+  "meeting",
+  "documentation",
+  "testing",
+  "deployment",
+]);
+
+export const agencyTaskSourceEnum = pgEnum("agency_task_source", [
+  "manual",
+  "inbox",
+  "meeting_action_item",
+]);
+
+export const agencyInboxSourceEnum = pgEnum("agency_inbox_source", [
+  "slack",
+  "manager_request",
+  "voice_note",
+  "screenshot",
+  "meeting_action_item",
+  "idea",
+  "bug",
+  "other",
+]);
+
+export const agencyProjectHealthEnum = pgEnum("agency_project_health", [
+  "on_track",
+  "at_risk",
+  "off_track",
+]);
+
+export const agencyTimeLogSourceEnum = pgEnum("agency_time_log_source", [
+  "timer",
+  "manual",
+]);
+
+export const agencyReportTypeEnum = pgEnum("agency_report_type", [
+  "daily",
+  "weekly",
+  "monthly",
+]);
+
+export const agencyKnowledgeTypeEnum = pgEnum("agency_knowledge_type", [
+  "note",
+  "snippet",
+  "command",
+  "link",
+  "checklist",
+]);
+
+export const agencyFileEntityEnum = pgEnum("agency_file_entity", [
+  "task",
+  "meeting",
+  "project",
+  "note",
+  "knowledge",
+]);

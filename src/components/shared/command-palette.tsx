@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Target, Compass, FolderKanban, ListTodo, LayoutDashboard, Plus } from "lucide-react";
+import { Target, Compass, FolderKanban, ListTodo, LayoutDashboard, Plus, Briefcase, Inbox } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -57,6 +57,21 @@ export function CommandPalette() {
           <CommandItem onSelect={() => go("/tasks")}>
             <ListTodo /> Tasks
           </CommandItem>
+          <CommandItem onSelect={() => go("/agency")}>
+            <Briefcase /> Agency Dashboard
+          </CommandItem>
+          <CommandItem onSelect={() => go("/agency/inbox")}>
+            <Inbox /> Agency Inbox
+          </CommandItem>
+          <CommandItem onSelect={() => go("/agency/tasks")}>
+            <ListTodo /> Agency My Tasks
+          </CommandItem>
+          <CommandItem onSelect={() => go("/agency/kanban")}>
+            <ListTodo /> Agency Kanban
+          </CommandItem>
+          <CommandItem onSelect={() => go("/agency/projects")}>
+            <FolderKanban /> Agency Projects
+          </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Create">
@@ -75,6 +90,12 @@ export function CommandPalette() {
           <CommandItem onSelect={() => go("/tasks?new=1")}>
             <Plus /> New Task
             <CommandShortcut>T</CommandShortcut>
+          </CommandItem>
+          <CommandItem onSelect={() => go("/agency/tasks?new=1")}>
+            <Plus /> New Agency Task
+          </CommandItem>
+          <CommandItem onSelect={() => go("/agency/projects?new=1")}>
+            <Plus /> New Agency Project
           </CommandItem>
         </CommandGroup>
       </CommandList>

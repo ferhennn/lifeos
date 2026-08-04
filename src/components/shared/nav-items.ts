@@ -38,7 +38,7 @@ export const primaryNav: NavItem[] = [
 ];
 
 export const workspaceNav: NavItem[] = [
-  { label: "Agency", href: "/agency", icon: Briefcase, disabled: true },
+  { label: "Agency", href: "/agency", icon: Briefcase },
   { label: "LinkedIn", href: "/linkedin", icon: Share2 },
   { label: "Jewellery", href: "/jewellery", icon: Gem, disabled: true },
   { label: "Portfolio", href: "/portfolio", icon: LayoutTemplate, disabled: true },

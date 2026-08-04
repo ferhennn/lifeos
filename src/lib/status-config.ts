@@ -78,6 +78,52 @@ export const linkedinGoalMetricLabels: Record<string, string> = {
   freelance_leads: "Freelance Leads",
 };
 
+export const agencyTaskStatusConfig: Record<string, { label: string; color: DotColor }> = {
+  inbox: { label: "Inbox", color: "neutral" },
+  todo: { label: "Todo", color: "neutral" },
+  today: { label: "Today", color: "blue" },
+  in_progress: { label: "In Progress", color: "blue" },
+  blocked: { label: "Blocked", color: "red" },
+  waiting_review: { label: "Waiting for Review", color: "amber" },
+  waiting_client: { label: "Waiting for Client", color: "amber" },
+  completed: { label: "Completed", color: "green" },
+  archived: { label: "Archived", color: "neutral" },
+};
+
+export const agencyTaskPriorityConfig: Record<"critical" | "high" | "medium" | "low", { label: string; color: DotColor }> = {
+  critical: { label: "Critical", color: "red" },
+  high: { label: "High", color: "amber" },
+  medium: { label: "Medium", color: "blue" },
+  low: { label: "Low", color: "neutral" },
+};
+
+export const agencyTaskTypeLabels: Record<string, string> = {
+  feature: "Feature",
+  bug: "Bug",
+  research: "Research",
+  meeting: "Meeting",
+  documentation: "Documentation",
+  testing: "Testing",
+  deployment: "Deployment",
+};
+
+export const agencyProjectHealthConfig: Record<string, { label: string; color: DotColor }> = {
+  on_track: { label: "On Track", color: "green" },
+  at_risk: { label: "At Risk", color: "amber" },
+  off_track: { label: "Off Track", color: "red" },
+};
+
+export const agencyInboxSourceLabels: Record<string, string> = {
+  slack: "Slack Message",
+  manager_request: "Manager Request",
+  voice_note: "Voice Note",
+  screenshot: "Screenshot",
+  meeting_action_item: "Meeting Action Item",
+  idea: "Idea",
+  bug: "Bug",
+  other: "Other",
+};
+
 export const recurrenceLabels: Record<string, string> = {
   none: "No recurrence",
   daily: "Daily",
