@@ -28,7 +28,7 @@ export default async function DashboardPage() {
         <div className="space-y-4 lg:col-span-2">
           <TodayFocusCard task={data.todayFocus} />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <TodaySchedule tasks={data.todaySchedule} />
+            <TodaySchedule items={data.todaySchedule} />
             <TodayPriorityList tasks={data.todayPriority} />
           </div>
           <TodayLinkedinCard post={data.todayLinkedinPost} />

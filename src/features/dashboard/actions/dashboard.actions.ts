@@ -6,6 +6,7 @@ import { listGoals } from "@/features/goals/actions/goals.actions";
 import { listStrategies } from "@/features/strategies/actions/strategies.actions";
 import { listProjects } from "@/features/projects/actions/projects.actions";
 import { getTodayLinkedinPost } from "@/features/linkedin/actions/posts.actions";
+import { listAgencyTasks } from "@/features/agency/actions/agency-tasks.actions";
 import type { LinkedinPost } from "@/db/schema";
 
 function priorityWeight(p: string) {
@@ -28,11 +29,20 @@ export type DeadlineItem = {
   href: string;
 };
 
+export type ScheduleItem = {
+  id: string;
+  title: string;
+  priority: string;
+  done: boolean;
+  href: string;
+  source: "task" | "agency";
+};
+
 export type DashboardData = {
   todayFocus: TaskWithMeta | null;
   todayLinkedinPost: LinkedinPost | null;
   todayPriority: TaskWithMeta[];
-  todaySchedule: TaskWithMeta[];
+  todaySchedule: ScheduleItem[];
   unscheduled: TaskWithMeta[];
   progressToday: { completed: number; total: number };
   weeklyProgress: { date: string; label: string; completed: number }[];
@@ -56,12 +66,13 @@ const QUOTES = [
 ];
 
 export async function getDashboardData(): Promise<DashboardData> {
-  const [tasks, goals, strategies, projects, todayLinkedinPost] = await Promise.all([
+  const [tasks, goals, strategies, projects, todayLinkedinPost, agencyTasks] = await Promise.all([
     listTasks(),
     listGoals(),
     listStrategies(),
     listProjects(),
     getTodayLinkedinPost(),
+    listAgencyTasks(),
   ]);
 
   const now = new Date();
@@ -82,7 +93,23 @@ export async function getDashboardData(): Promise<DashboardData> {
     .sort((a, b) => priorityWeight(a.priority) - priorityWeight(b.priority) || (a.dueDate ?? "9999").localeCompare(b.dueDate ?? "9999"))
     .slice(0, 5);
 
-  const todaySchedule = [...dueToday].sort((a, b) => priorityWeight(a.priority) - priorityWeight(b.priority));
+  const agencyDueToday = agencyTasks.filter((t) => t.dueDate === todayStr);
+
+  const todaySchedule: ScheduleItem[] = [
+    ...dueToday.map(
+      (t): ScheduleItem => ({ id: t.id, title: t.title, priority: t.priority, done: t.status === "done", href: `/tasks?openTask=${t.id}`, source: "task" }),
+    ),
+    ...agencyDueToday.map(
+      (t): ScheduleItem => ({
+        id: t.id,
+        title: t.title,
+        priority: t.priority,
+        done: t.status === "completed",
+        href: `/agency/tasks?openTask=${t.id}`,
+        source: "agency",
+      }),
+    ),
+  ].sort((a, b) => priorityWeight(a.priority) - priorityWeight(b.priority));
 
   const unscheduled = activeTasks
     .filter((t) => !t.dueDate)
@@ -93,8 +120,8 @@ export async function getDashboardData(): Promise<DashboardData> {
     );
 
   const progressToday = {
-    completed: dueToday.filter((t) => t.status === "done").length,
-    total: dueToday.length,
+    completed: dueToday.filter((t) => t.status === "done").length + agencyDueToday.filter((t) => t.status === "completed").length,
+    total: dueToday.length + agencyDueToday.length,
   };
 
   const weeklyProgress = Array.from({ length: 7 }).map((_, i) => {
