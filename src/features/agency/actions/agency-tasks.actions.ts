@@ -291,6 +291,20 @@ export async function updateAgencyTaskStatus(id: string, status: AgencyTaskStatu
   return task;
 }
 
+export async function rescheduleAgencyTask(id: string, dueDate: string | null) {
+  const user = await requireUser();
+  const [task] = await db
+    .update(agencyTasks)
+    .set({ dueDate, updatedAt: new Date() })
+    .where(and(eq(agencyTasks.id, id), eq(agencyTasks.userId, user.id)))
+    .returning();
+  revalidatePath("/agency");
+  revalidatePath("/agency/tasks");
+  revalidatePath("/agency/kanban");
+  revalidatePath("/agency/calendar");
+  return task;
+}
+
 export async function deleteAgencyTask(id: string) {
   const user = await requireUser();
   await db.delete(agencyTasks).where(and(eq(agencyTasks.id, id), eq(agencyTasks.userId, user.id)));

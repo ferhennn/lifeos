@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Users } from "lucide-react";
 import type { AgencyMeetingSummary } from "../../actions/agency-dashboard.actions";
 
@@ -12,9 +13,11 @@ export function AgencyMeetingsToday({ meetings }: { meetings: AgencyMeetingSumma
       ) : (
         <ul className="space-y-2">
           {meetings.map((m) => (
-            <li key={m.id} className="flex items-center justify-between text-sm">
-              <span className="truncate">{m.title}</span>
-              {m.durationMinutes && <span className="shrink-0 text-xs text-muted-foreground">{m.durationMinutes}m</span>}
+            <li key={m.id}>
+              <Link href={`/agency/meetings?openMeeting=${m.id}`} className="flex items-center justify-between text-sm hover:text-foreground">
+                <span className="truncate">{m.title}</span>
+                {m.durationMinutes && <span className="shrink-0 text-xs text-muted-foreground">{m.durationMinutes}m</span>}
+              </Link>
             </li>
           ))}
         </ul>
