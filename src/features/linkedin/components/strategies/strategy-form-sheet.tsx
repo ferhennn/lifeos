@@ -93,7 +93,7 @@ export function StrategyFormSheet({
       await onSubmit(values);
       onOpenChange(false);
     } catch {
-      toast.error("Something went wrong. Try again.");
+      toast.error("Couldn't save strategy. Try again.");
     }
   };
 

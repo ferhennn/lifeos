@@ -68,7 +68,7 @@ export function PillarFormSheet({
       await onSubmit(values);
       onOpenChange(false);
     } catch {
-      toast.error("Something went wrong. Try again.");
+      toast.error("Couldn't save pillar. Try again.");
     }
   };
 

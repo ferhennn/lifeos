@@ -115,7 +115,7 @@ export function IdeaFormSheet({
       await onSubmit(values);
       onOpenChange(false);
     } catch {
-      toast.error("Something went wrong. Try again.");
+      toast.error("Couldn't save idea. Try again.");
     }
   };
 

@@ -83,7 +83,7 @@ export function GoalFormSheet({
       await onSubmit(values);
       onOpenChange(false);
     } catch {
-      toast.error("Something went wrong. Try again.");
+      toast.error("Couldn't save goal. Try again.");
     }
   };
 
