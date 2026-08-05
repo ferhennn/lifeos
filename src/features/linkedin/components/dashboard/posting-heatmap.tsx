@@ -3,7 +3,7 @@
 import { format, parseISO } from "date-fns";
 import { Flame } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import type { HeatmapDay } from "../../actions/dashboard.actions";
+import type { HeatmapDay } from "../../actions/analytics.actions";
 
 function levelClass(count: number) {
   if (count === 0) return "bg-muted";

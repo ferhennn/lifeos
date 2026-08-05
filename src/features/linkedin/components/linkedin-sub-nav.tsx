@@ -13,6 +13,7 @@ import {
   Columns3,
   HeartHandshake,
   Target,
+  BarChart3,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ const items: SubNavItem[] = [
   { label: "Strategies", href: "/linkedin/strategies", icon: Compass },
   { label: "Engagement", href: "/linkedin/engagement", icon: HeartHandshake },
   { label: "Goals", href: "/linkedin/goals", icon: Target },
+  { label: "Analytics", href: "/linkedin/analytics", icon: BarChart3 },
 ];
 
 export function LinkedinSubNav() {

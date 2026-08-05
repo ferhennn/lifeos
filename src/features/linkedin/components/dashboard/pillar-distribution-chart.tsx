@@ -3,7 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { PieChart as PieIcon } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
-import type { PillarDistributionItem } from "../../actions/dashboard.actions";
+import type { PillarDistributionItem } from "../../actions/analytics.actions";
 
 function ChartTooltip({ active, payload }: { active?: boolean; payload?: { payload: PillarDistributionItem }[] }) {
   if (!active || !payload?.length) return null;
