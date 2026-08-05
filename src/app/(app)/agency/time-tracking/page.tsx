@@ -1,13 +1,25 @@
-import { Timer } from "lucide-react";
-import { AgencyComingSoon } from "@/features/agency/components/coming-soon";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { PageHeader } from "@/components/shared/page-header";
+import { TimeTrackingView } from "@/features/agency/components/time-tracking/time-tracking-view";
+import { listRecentTimeLogs, getTodayTimeLogMinutes } from "@/features/agency/actions/agency-time-logs.actions";
+import { listAgencyTaskOptions } from "@/features/agency/actions/agency-tasks.actions";
 
-export default function AgencyTimeTrackingPage() {
+export const metadata: Metadata = { title: "Time Tracking — LifeOS" };
+
+export default async function AgencyTimeTrackingPage() {
+  const [logs, taskOptions, todayMinutes] = await Promise.all([
+    listRecentTimeLogs(),
+    listAgencyTaskOptions(),
+    getTodayTimeLogMinutes(),
+  ]);
+
   return (
-    <AgencyComingSoon
-      title="Time Tracking"
-      description="Start, pause, resume, and stop timers on any task — daily, weekly, and project rollups."
-      icon={Timer}
-      phase="Phase 2"
-    />
+    <div className="flex h-full flex-col">
+      <PageHeader title="Time Tracking" description="Start a timer or log time manually against any task." />
+      <Suspense>
+        <TimeTrackingView logs={logs} taskOptions={taskOptions} todayMinutes={todayMinutes} />
+      </Suspense>
+    </div>
   );
 }

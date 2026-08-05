@@ -124,6 +124,11 @@ export const agencyInboxSourceLabels: Record<string, string> = {
   other: "Other",
 };
 
+export const agencyTimeLogSourceLabels: Record<string, string> = {
+  timer: "Timer",
+  manual: "Manual",
+};
+
 export const recurrenceLabels: Record<string, string> = {
   none: "No recurrence",
   daily: "Daily",
