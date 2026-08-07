@@ -4,10 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { toast } from "sonner";
-import { Search, Plus, Users, Clock } from "lucide-react";
+import { Search, Plus, Users, Clock, FolderKanban } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { MeetingFormSheet } from "./meeting-form-sheet";
 import { createAgencyMeeting, updateAgencyMeeting, deleteAgencyMeeting } from "../../actions/agency-meetings.actions";
@@ -78,7 +77,11 @@ export function MeetingsView({ meetings, projectOptions }: { meetings: AgencyMee
               >
                 <span className="w-24 shrink-0 text-xs text-muted-foreground">{format(parseISO(meeting.meetingDate), "MMM d, yyyy")}</span>
                 <span className="min-w-0 flex-1 truncate font-medium">{meeting.title}</span>
-                {meeting.projectTitle && <Badge variant="outline">{meeting.projectTitle}</Badge>}
+                {meeting.projectTitle && (
+                  <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
+                    <FolderKanban className="h-3 w-3" /> {meeting.projectTitle}
+                  </span>
+                )}
                 {meeting.durationMinutes != null && (
                   <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" /> {meeting.durationMinutes}m

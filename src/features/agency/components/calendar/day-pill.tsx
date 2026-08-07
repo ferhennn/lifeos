@@ -22,7 +22,7 @@ export const DayPill = memo(function DayPill({ item, onClick }: { item: Calendar
       onClick={onClick}
       style={{ transform: CSS.Translate.toString(transform) }}
       className={cn(
-        "flex w-full items-center gap-1.5 truncate rounded-md border border-border bg-card px-1.5 py-1 text-left text-[11px] leading-tight shadow-sm hover:bg-muted/50",
+        "flex w-full items-center gap-1.5 truncate rounded-md border border-border bg-card px-1.5 py-1 text-left text-[11px] leading-tight transition-shadow hover:bg-muted/50 hover:shadow-sm",
         isDragging && "opacity-50",
       )}
     >

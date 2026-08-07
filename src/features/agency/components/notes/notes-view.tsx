@@ -4,10 +4,9 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { Search, Plus, NotebookText } from "lucide-react";
+import { Search, Plus, NotebookText, FolderKanban, ListTodo, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { NoteFormSheet } from "./note-form-sheet";
 import { createAgencyNote, updateAgencyNote, deleteAgencyNote } from "../../actions/agency-notes.actions";
@@ -74,11 +73,23 @@ export function NotesView({
             >
               <p className="truncate text-sm font-medium">{note.title}</p>
               <p className="line-clamp-3 text-xs text-muted-foreground">{note.contentMarkdown || "Empty note."}</p>
-              <div className="mt-auto flex flex-wrap items-center gap-1.5 pt-1">
-                {note.projectTitle && <Badge variant="outline">{note.projectTitle}</Badge>}
-                {note.taskTitle && <Badge variant="outline">{note.taskTitle}</Badge>}
-                {note.meetingTitle && <Badge variant="outline">{note.meetingTitle}</Badge>}
-                <span className="ml-auto text-[11px] text-muted-foreground">{format(new Date(note.updatedAt), "MMM d")}</span>
+              <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 text-xs text-muted-foreground">
+                {note.projectTitle && (
+                  <span className="inline-flex min-w-0 items-center gap-1">
+                    <FolderKanban className="h-3 w-3 shrink-0" /> <span className="truncate">{note.projectTitle}</span>
+                  </span>
+                )}
+                {note.taskTitle && (
+                  <span className="inline-flex min-w-0 items-center gap-1">
+                    <ListTodo className="h-3 w-3 shrink-0" /> <span className="truncate">{note.taskTitle}</span>
+                  </span>
+                )}
+                {note.meetingTitle && (
+                  <span className="inline-flex min-w-0 items-center gap-1">
+                    <Users className="h-3 w-3 shrink-0" /> <span className="truncate">{note.meetingTitle}</span>
+                  </span>
+                )}
+                <span className="ml-auto shrink-0 text-[11px]">{format(new Date(note.updatedAt), "MMM d")}</span>
               </div>
             </button>
           ))}
