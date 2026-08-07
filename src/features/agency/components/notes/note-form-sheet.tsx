@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useWatch, Controller, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -39,6 +39,15 @@ import type { AgencyMeetingOption } from "../../actions/agency-meetings.actions"
 
 const NONE = "__none";
 
+function NotePreview({ control }: { control: Control<AgencyNoteValues> }) {
+  const content = useWatch({ control, name: "contentMarkdown" });
+  return content ? (
+    <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+  ) : (
+    <p className="text-muted-foreground">Nothing to preview yet.</p>
+  );
+}
+
 const emptyDefaults: AgencyNoteValues = {
   title: "",
   contentMarkdown: "",
@@ -75,14 +84,11 @@ export function NoteFormSheet({
     handleSubmit,
     control,
     reset,
-    watch,
     formState: { errors },
   } = useForm<AgencyNoteValues>({
     resolver: zodResolver(agencyNoteSchema),
     defaultValues: emptyDefaults,
   });
-
-  const content = watch("contentMarkdown");
 
   useEffect(() => {
     if (open) {
@@ -136,11 +142,7 @@ export function NoteFormSheet({
               </TabsContent>
               <TabsContent value="preview">
                 <div className="min-h-64 rounded-lg border border-border p-3 text-sm [&_a]:text-primary [&_a]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_h1]:mt-3 [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:mt-3 [&_h2]:text-base [&_h2]:font-semibold [&_h3]:mt-2 [&_h3]:font-medium [&_li]:ml-4 [&_ol]:list-decimal [&_p]:mb-2 [&_ul]:list-disc">
-                  {content ? (
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-                  ) : (
-                    <p className="text-muted-foreground">Nothing to preview yet.</p>
-                  )}
+                  <NotePreview control={control} />
                 </div>
               </TabsContent>
             </Tabs>
