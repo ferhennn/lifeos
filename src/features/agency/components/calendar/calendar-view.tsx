@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, format } from "date-fns";
@@ -25,7 +25,9 @@ export function CalendarView({ items }: { items: CalendarItem[] }) {
   const itemsByDate = useMemo(() => {
     const map = new Map<string, CalendarItem[]>();
     for (const item of items) {
-      map.set(item.date, [...(map.get(item.date) ?? []), item]);
+      const bucket = map.get(item.date);
+      if (bucket) bucket.push(item);
+      else map.set(item.date, [item]);
     }
     return map;
   }, [items]);
@@ -43,26 +45,37 @@ export function CalendarView({ items }: { items: CalendarItem[] }) {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
-  const handleItemClick = (item: CalendarItem) => {
-    router.push(item.type === "task" ? `/agency/tasks?openTask=${item.id}` : `/agency/meetings?openMeeting=${item.id}`);
-  };
+  const handleItemClick = useCallback(
+    (item: CalendarItem) => {
+      router.push(item.type === "task" ? `/agency/tasks?openTask=${item.id}` : `/agency/meetings?openMeeting=${item.id}`);
+    },
+    [router],
+  );
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-    const [type, id] = (active.id as string).split(":");
-    const newDate = over.id as string;
-    const item = items.find((i) => i.type === type && i.id === id);
-    if (!item || item.date === newDate) return;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over) return;
+      const [type, id] = (active.id as string).split(":");
+      const newDate = over.id as string;
+      const item = items.find((i) => i.type === type && i.id === id);
+      if (!item || item.date === newDate) return;
 
-    setIsPending(true);
-    (type === "task" ? rescheduleAgencyTask(id, newDate) : rescheduleAgencyMeeting(id, newDate))
-      .then(() => {
-        toast.success(`Rescheduled to ${format(new Date(newDate), "MMM d")}`);
-        router.refresh();
-      })
-      .finally(() => setIsPending(false));
-  };
+      setIsPending(true);
+      (type === "task" ? rescheduleAgencyTask(id, newDate) : rescheduleAgencyMeeting(id, newDate))
+        .then(() => {
+          toast.success(`Rescheduled to ${format(new Date(newDate), "MMM d")}`);
+          router.refresh();
+        })
+        .finally(() => setIsPending(false));
+    },
+    [items, router],
+  );
+
+  const agendaItems = useMemo(() => {
+    const monthStart = format(startOfMonth(anchor), "yyyy-MM-dd");
+    return items.filter((i) => i.date >= monthStart).sort((a, b) => a.date.localeCompare(b.date));
+  }, [items, anchor]);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
@@ -88,10 +101,7 @@ export function CalendarView({ items }: { items: CalendarItem[] }) {
 
       {view === "agenda" ? (
         <div className="rounded-xl border border-border bg-card">
-          <AgendaList
-            items={items.filter((i) => i.date >= format(startOfMonth(anchor), "yyyy-MM-dd")).sort((a, b) => a.date.localeCompare(b.date))}
-            onItemClick={handleItemClick}
-          />
+          <AgendaList items={agendaItems} onItemClick={handleItemClick} />
         </div>
       ) : (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>

@@ -1,12 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { format, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import { DayPill } from "./day-pill";
 import type { CalendarItem } from "../../actions/agency-calendar.actions";
 
-export function DayCell({
+export const DayCell = memo(function DayCell({
   date,
   inCurrentMonth = true,
   items,
@@ -44,4 +45,4 @@ export function DayCell({
       </div>
     </div>
   );
-}
+});
