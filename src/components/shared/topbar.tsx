@@ -31,6 +31,7 @@ const TITLES: Record<string, string> = {
   tasks: "Tasks",
   linkedin: "LinkedIn",
   agency: "Agency",
+  v2: "Dashboard v2",
 };
 
 function initials(name: string) {
