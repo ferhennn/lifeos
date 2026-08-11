@@ -15,7 +15,7 @@ export function AgencyGoodMorningHeader({ name }: { name: string }) {
       <h1 className="text-2xl font-semibold tracking-tight">
         {getGreeting(now.getHours())}, {name}
       </h1>
-      <p className="mt-1 text-sm text-muted-foreground">{format(now, "EEEE, MMMM d")} — here's what needs you today.</p>
+      <p className="mt-1 text-sm text-muted-foreground">{format(now, "EEEE, MMMM d")} — here&apos;s what needs you today.</p>
     </div>
   );
 }
