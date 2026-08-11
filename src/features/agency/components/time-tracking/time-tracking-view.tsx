@@ -174,7 +174,9 @@ function ManualTimeEntryDialog({
   const [note, setNote] = useState("");
   const [isPending, setIsPending] = useState(false);
 
-  useEffect(() => {
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) {
       const now = new Date();
       setStartedAt(toLocalDatetimeInput(new Date(now.getTime() - 30 * 60000)));
@@ -182,7 +184,7 @@ function ManualTimeEntryDialog({
       setTaskId("");
       setNote("");
     }
-  }, [open]);
+  }
 
   async function handleSubmit() {
     setIsPending(true);
