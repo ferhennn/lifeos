@@ -14,6 +14,7 @@ import { TimeLogRow } from "./time-log-row";
 import { createTimeLog, deleteTimeLog } from "../../actions/agency-time-logs.actions";
 import type { AgencyTimeLogWithTask } from "../../actions/agency-time-logs.actions";
 import type { AgencyTaskOption } from "../../actions/agency-tasks.actions";
+import { useValueChanged } from "@/lib/use-value-changed";
 
 function toLocalDatetimeInput(date: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -174,16 +175,12 @@ function ManualTimeEntryDialog({
   const [note, setNote] = useState("");
   const [isPending, setIsPending] = useState(false);
 
-  const [prevOpen, setPrevOpen] = useState(open);
-  if (open !== prevOpen) {
-    setPrevOpen(open);
-    if (open) {
-      const now = new Date();
-      setStartedAt(toLocalDatetimeInput(new Date(now.getTime() - 30 * 60000)));
-      setEndedAt(toLocalDatetimeInput(now));
-      setTaskId("");
-      setNote("");
-    }
+  if (useValueChanged(open) && open) {
+    const now = new Date();
+    setStartedAt(toLocalDatetimeInput(new Date(now.getTime() - 30 * 60000)));
+    setEndedAt(toLocalDatetimeInput(now));
+    setTaskId("");
+    setNote("");
   }
 
   async function handleSubmit() {

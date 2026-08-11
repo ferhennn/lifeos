@@ -7,6 +7,7 @@ import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useValueChanged } from "@/lib/use-value-changed";
 import {
   Sheet,
   SheetContent,
@@ -90,23 +91,19 @@ export function NoteFormSheet({
     defaultValues: emptyDefaults,
   });
 
-  const [prevOpen, setPrevOpen] = useState(open);
-  if (open !== prevOpen) {
-    setPrevOpen(open);
-    if (open) {
-      setTab("write");
-      reset(
-        note
-          ? {
-              title: note.title,
-              contentMarkdown: note.contentMarkdown,
-              agencyProjectId: note.agencyProjectId ?? "",
-              agencyTaskId: note.agencyTaskId ?? "",
-              meetingId: note.meetingId ?? "",
-            }
-          : emptyDefaults,
-      );
-    }
+  if (useValueChanged(open) && open) {
+    setTab("write");
+    reset(
+      note
+        ? {
+            title: note.title,
+            contentMarkdown: note.contentMarkdown,
+            agencyProjectId: note.agencyProjectId ?? "",
+            agencyTaskId: note.agencyTaskId ?? "",
+            meetingId: note.meetingId ?? "",
+          }
+        : emptyDefaults,
+    );
   }
 
   const submit = async (values: AgencyNoteValues) => {
