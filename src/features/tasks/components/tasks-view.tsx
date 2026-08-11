@@ -82,9 +82,12 @@ export function TasksView({
     });
   }, [tasksData, filterProjectId, priorityFilter, search]);
 
-  useEffect(() => {
+  const filterKey = `${filterProjectId ?? ""}|${priorityFilter}|${search}|${view}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey);
     setSelectedIds(new Set());
-  }, [filterProjectId, priorityFilter, search, view]);
+  }
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["tasks"] });
