@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/shared/empty-state";
+import { useValueChanged } from "@/lib/use-value-changed";
 import { AgencyTaskBoard } from "./task-board";
 import { AgencyTaskList } from "./task-list";
 import { AgencyTaskFormSheet } from "./task-form-sheet";
@@ -87,11 +88,7 @@ export function AgencyTasksView({
   }, [tasksData, filterProjectId, priorityFilter, statusFilter, search]);
 
   const filterKey = `${filterProjectId ?? ""}|${priorityFilter}|${statusFilter}|${search}|${view}`;
-  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
-  if (filterKey !== prevFilterKey) {
-    setPrevFilterKey(filterKey);
-    setSelectedIds(new Set());
-  }
+  if (useValueChanged(filterKey)) setSelectedIds(new Set());
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["agency-tasks"] });

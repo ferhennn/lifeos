@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/shared/empty-state";
+import { useValueChanged } from "@/lib/use-value-changed";
 import { TaskBoard } from "./task-board";
 import { TaskList } from "./task-list";
 import { TaskFormSheet } from "./task-form-sheet";
@@ -83,11 +84,7 @@ export function TasksView({
   }, [tasksData, filterProjectId, priorityFilter, search]);
 
   const filterKey = `${filterProjectId ?? ""}|${priorityFilter}|${search}|${view}`;
-  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
-  if (filterKey !== prevFilterKey) {
-    setPrevFilterKey(filterKey);
-    setSelectedIds(new Set());
-  }
+  if (useValueChanged(filterKey)) setSelectedIds(new Set());
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["tasks"] });
