@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, useWatch, Controller, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Trash2 } from "lucide-react";
@@ -90,7 +90,9 @@ export function NoteFormSheet({
     defaultValues: emptyDefaults,
   });
 
-  useEffect(() => {
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) {
       setTab("write");
       reset(
@@ -105,7 +107,7 @@ export function NoteFormSheet({
           : emptyDefaults,
       );
     }
-  }, [open, note, reset]);
+  }
 
   const submit = async (values: AgencyNoteValues) => {
     try {
