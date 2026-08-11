@@ -103,7 +103,7 @@ const DATE_FORMATS: Array<(s: string) => Date | null> = [
     // m/d/y or d/m/y or m-d-y — prefer month-first (US), swap when only the other order is valid.
     const m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);
     if (!m) return null;
-    let [, a, b, y] = m;
+    const [, a, b, y] = m;
     let year = Number(y);
     if (year < 100) year += 2000;
     let month = Number(a);
@@ -117,7 +117,7 @@ const DATE_FORMATS: Array<(s: string) => Date | null> = [
   (s) => {
     // Strip ordinal suffixes ("10th", "3rd") which break Date parsing.
     const cleaned = s.replace(/\b(\d{1,2})(st|nd|rd|th)\b/gi, "$1");
-    let d = new Date(cleaned);
+    const d = new Date(cleaned);
     if (Number.isNaN(d.getTime())) return null;
     // "Month Day" with no year parses to a bogus/ambiguous year in some engines — pin to current year
     // (or next year if that date already passed), unless a 4-digit year was actually present.
