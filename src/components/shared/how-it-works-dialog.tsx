@@ -112,7 +112,7 @@ export function HowItWorksDialog() {
               <span className="font-medium">LinkedIn:</span>{" "}
               <span className="text-muted-foreground">
                 Runs independently of the goal chain. Bulk-upload a month of posts up front; the dashboard is a daily
-                operating system — today's post, an engagement checklist, weekly progress, and a rule-based coach — while
+                operating system — today&apos;s post, an engagement checklist, weekly progress, and a rule-based coach — while
                 every metric (likes, impressions, engagement rate) lives on its own Analytics page.
               </span>
             </span>
@@ -124,8 +124,8 @@ export function HowItWorksDialog() {
               <span className="text-muted-foreground">
                 A separate workspace for client work. Capture into the Inbox, triage into tasks worked from a Kanban
                 board or list, grouped by project. Time Tracking (live timer or manual entry) and Focus Mode
-                (distraction-free countdown) log real hours against a task — both feed the same "Hours Worked Today"
-                stat and the task's actual time.
+                (distraction-free countdown) log real hours against a task — both feed the same &ldquo;Hours Worked Today&rdquo;
+                stat and the task&apos;s actual time.
               </span>
             </span>
           </li>
@@ -134,7 +134,7 @@ export function HowItWorksDialog() {
             <span>
               <span className="font-medium">Quick capture:</span>{" "}
               <span className="text-muted-foreground">
-                The input box on the dashboard. It's for speed, not structure — link it to a goal later from the task itself.
+                The input box on the dashboard. It&apos;s for speed, not structure — link it to a goal later from the task itself.
               </span>
             </span>
           </li>
