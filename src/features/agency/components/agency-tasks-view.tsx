@@ -86,9 +86,12 @@ export function AgencyTasksView({
     });
   }, [tasksData, filterProjectId, priorityFilter, statusFilter, search]);
 
-  useEffect(() => {
+  const filterKey = `${filterProjectId ?? ""}|${priorityFilter}|${statusFilter}|${search}|${view}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey);
     setSelectedIds(new Set());
-  }, [filterProjectId, priorityFilter, statusFilter, search, view]);
+  }
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["agency-tasks"] });
