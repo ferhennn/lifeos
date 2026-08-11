@@ -27,6 +27,8 @@ export function MeetingsView({ meetings, projectOptions }: { meetings: AgencyMee
     if (!openId) return;
     const match = meetings.find((m) => m.id === openId);
     if (match) {
+      // Deep link: open the sheet for a meeting named in the URL, then clear the param.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEditingMeeting(match);
       setSheetOpen(true);
       router.replace("/agency/meetings");
