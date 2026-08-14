@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -15,9 +14,6 @@ const THEME_MODES = [
 
 export function AppearanceSettings() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   return (
     <Card>
@@ -36,11 +32,9 @@ export function AppearanceSettings() {
                 variant="outline"
                 size="sm"
                 className={
-                  mounted && theme === value
-                    ? "gap-1.5 border-primary bg-primary/10 text-primary"
-                    : "gap-1.5"
+                  theme === value ? "gap-1.5 border-primary bg-primary/10 text-primary" : "gap-1.5"
                 }
-                aria-pressed={mounted && theme === value}
+                aria-pressed={theme === value}
                 onClick={() => setTheme(value)}
               >
                 <Icon className="h-3.5 w-3.5" /> {label}
