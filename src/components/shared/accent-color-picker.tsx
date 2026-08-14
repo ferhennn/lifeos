@@ -46,7 +46,7 @@ export function AccentColorPicker() {
           max={360}
           step={1}
           value={[accentHue]}
-          onValueChange={(value) => setAccentHue(value[0])}
+          onValueChange={(value) => setAccentHue(Array.isArray(value) ? value[0] : value)}
         />
       </div>
     </div>

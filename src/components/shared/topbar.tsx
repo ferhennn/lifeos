@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Search, LogOut, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ const TITLES: Record<string, string> = {
   linkedin: "LinkedIn",
   agency: "Agency",
   v2: "Dashboard v2",
+  profile: "Profile",
 };
 
 function initials(name: string) {
@@ -100,7 +102,7 @@ export function Topbar({
               <span className="truncate text-xs font-normal text-muted-foreground">{user.email}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
+            <DropdownMenuItem render={<Link href="/profile" />}>
               <UserIcon /> Profile
             </DropdownMenuItem>
             <DropdownMenuSeparator />
