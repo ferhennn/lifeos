@@ -6,8 +6,10 @@ import { ThemeProvider } from "next-themes";
 import { LucideProvider } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { useThemeColorStore } from "@/stores/theme-color-store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  useThemeColorStore();
   const [queryClient] = useState(
     () =>
       new QueryClient({
