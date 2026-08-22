@@ -2,7 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { loginSchema, signupSchema, type LoginValues, type SignupValues } from "../schema/auth.schema";
+import {
+  loginSchema,
+  signupSchema,
+  forgotPasswordSchema,
+  type LoginValues,
+  type SignupValues,
+  type ForgotPasswordValues,
+} from "../schema/auth.schema";
 
 type ActionResult = { error: string } | { error?: undefined };
 
@@ -42,6 +49,26 @@ export async function signUpWithEmail(values: SignupValues): Promise<ActionResul
   }
 
   redirect("/dashboard");
+}
+
+export async function requestPasswordReset(values: ForgotPasswordValues): Promise<ActionResult> {
+  const parsed = forgotPasswordSchema.safeParse(values);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  const supabase = await createClient();
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${origin}/reset-password`,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return {};
 }
 
 export async function signInWithGoogle(): Promise<ActionResult> {
