@@ -40,7 +40,9 @@ export function NavList({
 
         const content = (
           <>
-            <Icon className="h-[17px] w-[17px] shrink-0" />
+            <span className="flex h-[17px] w-[17px] shrink-0 items-center justify-center">
+              <Icon className="h-[17px] w-[17px]" />
+            </span>
             {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
             {!collapsed && item.disabled && (
               <span className="rounded-full border border-sidebar-border px-1.5 py-0.5 text-[10px] leading-none text-sidebar-foreground/40">
