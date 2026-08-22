@@ -13,7 +13,7 @@ export function AgencyQuickActions({ lastActiveTask }: { lastActiveTask: AgencyT
           <PlayCircle className="h-3.5 w-3.5" /> Continue Last Task
         </Button>
       )}
-      <Button size="sm" variant="outline" render={<Link href="/agency/focus" />}>
+      <Button size="sm" variant="outline" render={<Link href="/agency/time-tracking" />}>
         <Timer className="h-3.5 w-3.5" /> Start Focus Session
       </Button>
     </div>

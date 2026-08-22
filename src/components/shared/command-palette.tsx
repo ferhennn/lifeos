@@ -66,9 +66,6 @@ export function CommandPalette() {
           <CommandItem onSelect={() => go("/agency/tasks")}>
             <ListTodo /> Agency My Tasks
           </CommandItem>
-          <CommandItem onSelect={() => go("/agency/kanban")}>
-            <ListTodo /> Agency Kanban
-          </CommandItem>
           <CommandItem onSelect={() => go("/agency/projects")}>
             <FolderKanban /> Agency Projects
           </CommandItem>

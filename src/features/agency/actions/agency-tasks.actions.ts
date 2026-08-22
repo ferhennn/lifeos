@@ -221,7 +221,6 @@ export async function createAgencyTask(values: AgencyTaskValues) {
 
   revalidatePath("/agency");
   revalidatePath("/agency/tasks");
-  revalidatePath("/agency/kanban");
   revalidatePath("/agency/inbox");
   if (parsed.agencyProjectId) revalidatePath(`/agency/projects/${parsed.agencyProjectId}`);
   return task;
@@ -266,7 +265,6 @@ export async function updateAgencyTask(id: string, values: AgencyTaskValues) {
 
   revalidatePath("/agency");
   revalidatePath("/agency/tasks");
-  revalidatePath("/agency/kanban");
   if (parsed.agencyProjectId) revalidatePath(`/agency/projects/${parsed.agencyProjectId}`);
   return task;
 }
@@ -286,7 +284,6 @@ export async function updateAgencyTaskStatus(id: string, status: AgencyTaskStatu
 
   revalidatePath("/agency");
   revalidatePath("/agency/tasks");
-  revalidatePath("/agency/kanban");
   revalidatePath("/agency/inbox");
   return task;
 }
@@ -300,8 +297,7 @@ export async function rescheduleAgencyTask(id: string, dueDate: string | null) {
     .returning();
   revalidatePath("/agency");
   revalidatePath("/agency/tasks");
-  revalidatePath("/agency/kanban");
-  revalidatePath("/agency/calendar");
+  revalidatePath("/agency/meetings");
   return task;
 }
 
@@ -310,7 +306,6 @@ export async function deleteAgencyTask(id: string) {
   await db.delete(agencyTasks).where(and(eq(agencyTasks.id, id), eq(agencyTasks.userId, user.id)));
   revalidatePath("/agency");
   revalidatePath("/agency/tasks");
-  revalidatePath("/agency/kanban");
   revalidatePath("/agency/inbox");
 }
 
@@ -320,7 +315,6 @@ export async function deleteAgencyTasks(ids: string[]) {
   await db.delete(agencyTasks).where(and(inArray(agencyTasks.id, ids), eq(agencyTasks.userId, user.id)));
   revalidatePath("/agency");
   revalidatePath("/agency/tasks");
-  revalidatePath("/agency/kanban");
 }
 
 // --- Checklist ---

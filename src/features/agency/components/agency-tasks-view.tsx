@@ -37,22 +37,18 @@ export function AgencyTasksView({
   projectOptions,
   epicOptions,
   filterProjectId,
-  allowViewToggle = true,
-  defaultView = "board",
 }: {
   initialTasks: AgencyTaskWithMeta[];
   goalOptions: GoalOption[];
   projectOptions: AgencyProjectOption[];
   epicOptions: AgencyEpicOption[];
   filterProjectId?: string;
-  allowViewToggle?: boolean;
-  defaultView?: "board" | "list";
 }) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [view, setView] = useState<"board" | "list">(defaultView);
+  const [view, setView] = useState<"board" | "list">("board");
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -60,7 +56,7 @@ export function AgencyTasksView({
   const [editingTask, setEditingTask] = useState<AgencyTaskDetail | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const basePath = filterProjectId ? `/agency/projects/${filterProjectId}` : allowViewToggle ? "/agency/tasks" : "/agency/kanban";
+  const basePath = filterProjectId ? `/agency/projects/${filterProjectId}` : "/agency/tasks";
 
   const { data: tasksData = [] } = useQuery({
     queryKey: ["agency-tasks"],
@@ -171,18 +167,16 @@ export function AgencyTasksView({
     <div className="flex flex-1 flex-col gap-4 p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          {allowViewToggle && (
-            <Tabs value={view} onValueChange={(v) => setView(v as "board" | "list")}>
-              <TabsList>
-                <TabsTrigger value="board">
-                  <LayoutGrid className="h-3.5 w-3.5" /> Board
-                </TabsTrigger>
-                <TabsTrigger value="list">
-                  <ListIcon className="h-3.5 w-3.5" /> List
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
+          <Tabs value={view} onValueChange={(v) => setView(v as "board" | "list")}>
+            <TabsList>
+              <TabsTrigger value="board">
+                <LayoutGrid className="h-3.5 w-3.5" /> Board
+              </TabsTrigger>
+              <TabsTrigger value="list">
+                <ListIcon className="h-3.5 w-3.5" /> List
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
           <div className="relative">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />

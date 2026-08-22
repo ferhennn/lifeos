@@ -6,11 +6,8 @@ import {
   LayoutDashboard,
   Inbox,
   ListTodo,
-  KanbanSquare,
   FolderKanban,
   Clock,
-  Timer,
-  CalendarDays,
   Users,
   NotebookText,
   type LucideIcon,
@@ -19,20 +16,14 @@ import { cn } from "@/lib/utils";
 
 type SubNavItem = { label: string; href: string; icon: LucideIcon };
 
-// Phase 2 is complete. All Phase 3 items (Reports, Knowledge Base, Files,
-// Search, Settings) stay hidden until they ship — their placeholder
-// pages/routes are untouched, just not linked here.
 const items: SubNavItem[] = [
   { label: "Dashboard", href: "/agency", icon: LayoutDashboard },
   { label: "Inbox", href: "/agency/inbox", icon: Inbox },
   { label: "My Tasks", href: "/agency/tasks", icon: ListTodo },
-  { label: "Kanban", href: "/agency/kanban", icon: KanbanSquare },
   { label: "Projects", href: "/agency/projects", icon: FolderKanban },
-  { label: "Calendar", href: "/agency/calendar", icon: CalendarDays },
   { label: "Meetings", href: "/agency/meetings", icon: Users },
   { label: "Notes", href: "/agency/notes", icon: NotebookText },
   { label: "Time Tracking", href: "/agency/time-tracking", icon: Clock },
-  { label: "Focus Mode", href: "/agency/focus", icon: Timer },
 ];
 
 export function AgencySubNav() {

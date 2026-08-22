@@ -11,7 +11,7 @@ export type AgencyMeetingWithProject = AgencyMeeting & { projectTitle: string | 
 
 function revalidateAll() {
   revalidatePath("/agency/meetings");
-  revalidatePath("/agency/calendar");
+  revalidatePath("/agency/meetings");
   revalidatePath("/agency");
 }
 

@@ -9,7 +9,7 @@ import { requireUser } from "@/lib/require-user";
 export type AgencyFocusSessionWithTask = AgencyFocusSession & { taskTitle: string | null };
 
 function revalidateAll() {
-  revalidatePath("/agency/focus");
+  revalidatePath("/agency/time-tracking");
   revalidatePath("/agency");
 }
 
