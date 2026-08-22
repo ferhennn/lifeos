@@ -1,6 +1,6 @@
 "use server";
 
-import { format, subDays, addDays, getDayOfYear, parseISO, isWithinInterval } from "date-fns";
+import { format, subDays, addDays, parseISO, isWithinInterval } from "date-fns";
 import { listTasks, type TaskWithMeta } from "@/features/tasks/actions/tasks.actions";
 import { listGoals } from "@/features/goals/actions/goals.actions";
 import { listStrategies } from "@/features/strategies/actions/strategies.actions";
@@ -41,29 +41,14 @@ export type ScheduleItem = {
 export type DashboardData = {
   todayFocus: TaskWithMeta | null;
   todayLinkedinPost: LinkedinPost | null;
-  todayPriority: TaskWithMeta[];
-  todaySchedule: ScheduleItem[];
+  todayQueue: ScheduleItem[];
   unscheduled: TaskWithMeta[];
   progressToday: { completed: number; total: number };
   weeklyProgress: { date: string; label: string; completed: number }[];
   monthlyGoalProgress: { id: string; title: string; coverColor: string; progress: number }[];
   recentActivity: ActivityItem[];
   upcomingDeadlines: DeadlineItem[];
-  quote: string;
 };
-
-const QUOTES = [
-  "Small daily improvements lead to staggering long-term results.",
-  "Discipline is choosing what you want most over what you want now.",
-  "The strategy is only as good as the tasks it produces today.",
-  "Progress, not perfection.",
-  "You don't rise to the level of your goals — you fall to the level of your systems.",
-  "Every task you finish today is a vote for who you're becoming.",
-  "Momentum is built one completed task at a time.",
-  "Consistency compounds quietly, then all at once.",
-  "Focus on the next right action, not the whole mountain.",
-  "What gets scheduled gets done.",
-];
 
 export async function getDashboardData(): Promise<DashboardData> {
   const [tasks, goals, strategies, projects, todayLinkedinPost, agencyTasks] = await Promise.all([
@@ -89,15 +74,17 @@ export async function getDashboardData(): Promise<DashboardData> {
     [...activeTasks].sort((a, b) => priorityWeight(a.priority) - priorityWeight(b.priority))[0] ??
     null;
 
-  const todayPriority = [...overdue, ...dueToday.filter((t) => t.status !== "done")]
-    .sort((a, b) => priorityWeight(a.priority) - priorityWeight(b.priority) || (a.dueDate ?? "9999").localeCompare(b.dueDate ?? "9999"))
-    .slice(0, 5);
+  const agencyActive = agencyTasks.filter((t) => t.status !== "completed" && t.status !== "archived");
+  const agencyOverdue = agencyActive.filter((t) => t.dueDate && t.dueDate < todayStr);
+  const agencyDueToday = agencyActive.filter((t) => t.dueDate === todayStr);
 
-  const agencyDueToday = agencyTasks.filter((t) => t.dueDate === todayStr);
-
-  const todaySchedule: ScheduleItem[] = [
+  const todayQueue: ScheduleItem[] = [
+    ...overdue.map((t): ScheduleItem => ({ id: t.id, title: t.title, priority: t.priority, done: false, href: `/tasks?openTask=${t.id}`, source: "task" })),
     ...dueToday.map(
       (t): ScheduleItem => ({ id: t.id, title: t.title, priority: t.priority, done: t.status === "done", href: `/tasks?openTask=${t.id}`, source: "task" }),
+    ),
+    ...agencyOverdue.map(
+      (t): ScheduleItem => ({ id: t.id, title: t.title, priority: t.priority, done: false, href: `/agency/tasks?openTask=${t.id}`, source: "agency" }),
     ),
     ...agencyDueToday.map(
       (t): ScheduleItem => ({
@@ -119,9 +106,10 @@ export async function getDashboardData(): Promise<DashboardData> {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
+  const agencyDueTodayAll = agencyTasks.filter((t) => t.dueDate === todayStr);
   const progressToday = {
-    completed: dueToday.filter((t) => t.status === "done").length + agencyDueToday.filter((t) => t.status === "completed").length,
-    total: dueToday.length + agencyDueToday.length,
+    completed: dueToday.filter((t) => t.status === "done").length + agencyDueTodayAll.filter((t) => t.status === "completed").length,
+    total: dueToday.length + agencyDueTodayAll.length,
   };
 
   const weeklyProgress = Array.from({ length: 7 }).map((_, i) => {
@@ -168,14 +156,12 @@ export async function getDashboardData(): Promise<DashboardData> {
   return {
     todayFocus,
     todayLinkedinPost,
-    todayPriority,
-    todaySchedule,
+    todayQueue,
     unscheduled,
     progressToday,
     weeklyProgress,
     monthlyGoalProgress,
     recentActivity,
     upcomingDeadlines,
-    quote: QUOTES[getDayOfYear(now) % QUOTES.length],
   };
 }
